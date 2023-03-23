@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../core/helpers/snackbar_helper.dart';
@@ -52,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _onLoggedIn(LoggedUser? loggedUser) async {
     if (loggedUser != null) {
-      await context.navigateTo('/pedidos/cadastro');
+      await context.navigateTo('/');
     }
   }
 
@@ -76,14 +75,14 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(16),
-                      child: SvgPicture.asset(
-                        'assets/logo.svg',
-                        height: 70,
-                      ),
-                    ),
+                    // Container(
+                    //   alignment: Alignment.center,
+                    //   padding: const EdgeInsets.all(16),
+                    //   child: SvgPicture.asset(
+                    //     'assets/logo.svg',
+                    //     height: 70,
+                    //   ),
+                    // ),
                     Column(
                       children: [
                         Row(

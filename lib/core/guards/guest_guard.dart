@@ -17,6 +17,6 @@ Future<String?> guestGuard(BuildContext context, GoRouterState state) async {
   if (authStore.loggedUser == null) {
     return null;
   } else {
-    return '/pedidos/cadastro';
+    return '/';
   }
 }

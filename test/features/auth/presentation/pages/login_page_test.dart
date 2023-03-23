@@ -118,7 +118,7 @@ void main() {
       await tester.tap(widget);
       await tester.pump();
       verify(() => mockDoLogin(tEmail, tPassword)).called(1);
-      verify(() => router.go('/pedidos/cadastro')).called(1);
+      verify(() => router.go('/')).called(1);
       verifyNever(() => mockSnackbarHelper.showErrorSnackbar(any(), any()));
     },
   );

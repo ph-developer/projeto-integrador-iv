@@ -1,0 +1,47 @@
+// ignore_for_file: unused_import
+import 'package:projeto_integrador_iv/core/boot/auth/auth_boot.dart';
+import 'package:projeto_integrador_iv/core/boot/boot.dart';
+import 'package:projeto_integrador_iv/core/boot/firebase/firebase_boot.dart';
+import 'package:projeto_integrador_iv/core/boot/firebase/firebase_options.g.dart';
+import 'package:projeto_integrador_iv/core/boot/injection/injector_boot.dart';
+import 'package:projeto_integrador_iv/core/boot/router/router_boot.dart';
+import 'package:projeto_integrador_iv/core/boot/sentry/sentry_boot.dart';
+import 'package:projeto_integrador_iv/core/errors/error_handler.dart';
+import 'package:projeto_integrador_iv/core/errors/error_handler_impl.dart';
+import 'package:projeto_integrador_iv/core/errors/failure.dart';
+import 'package:projeto_integrador_iv/core/guards/auth_guard.dart';
+import 'package:projeto_integrador_iv/core/guards/guest_guard.dart';
+import 'package:projeto_integrador_iv/core/helpers/input_formatters.dart';
+import 'package:projeto_integrador_iv/core/helpers/map_helper.dart';
+import 'package:projeto_integrador_iv/core/helpers/snackbar_helper.dart';
+import 'package:projeto_integrador_iv/core/injection/injector.dart';
+import 'package:projeto_integrador_iv/core/reactivity/obs_form.dart';
+import 'package:projeto_integrador_iv/core/router/router.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/design_system.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/buttons/outline_button.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/dialogs/confirm_dialog.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/password_input.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/select_input.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/text_area_input.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/text_input.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/pagination/paginator.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/base_snackbar.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/error_snackbar.dart';
+import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/success_snackbar.dart';
+import 'package:projeto_integrador_iv/core/theme/theme.dart';
+import 'package:projeto_integrador_iv/features/app/presentation/pages/hello_world_page.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/entities/logged_user.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/errors/failures.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/repositories/auth_repository.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/usecases/do_login.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/usecases/do_logout.dart';
+import 'package:projeto_integrador_iv/features/auth/domain/usecases/get_current_user.dart';
+import 'package:projeto_integrador_iv/features/auth/external/datasources/auth_datasource_impl.dart';
+import 'package:projeto_integrador_iv/features/auth/infra/datasources/auth_datasource.dart';
+import 'package:projeto_integrador_iv/features/auth/infra/models/logged_user_model.dart';
+import 'package:projeto_integrador_iv/features/auth/infra/repositories/auth_repository_impl.dart';
+import 'package:projeto_integrador_iv/features/auth/presentation/pages/login_page.dart';
+import 'package:projeto_integrador_iv/features/auth/presentation/stores/auth_store.dart';
+import 'package:projeto_integrador_iv/main.dart';
+
+void main() {}

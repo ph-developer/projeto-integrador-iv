@@ -36,7 +36,7 @@ void main() {
   );
 
   test(
-    'should return "/pedidos/cadastro" when user is logged in.',
+    'should return "/" when user is logged in.',
     () async {
       // arrange
       when(() => mockAuthStore.isLoading).thenReturn(false);
@@ -44,7 +44,7 @@ void main() {
       // act
       final result = await guestGuard(mockBuildContext, mockGoRouterState);
       // assert
-      expect(result, equals('/pedidos/cadastro'));
+      expect(result, equals('/'));
     },
   );
 

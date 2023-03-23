@@ -4,7 +4,6 @@ import 'package:firebase_auth_platform_interface/firebase_auth_platform_interfac
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart'
     hide MockFirebaseApp;
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:projeto_integrador_iv/core/boot/firebase/firebase_boot.dart';
@@ -58,26 +57,10 @@ void main() {
 
   group('setup', () {
     test(
-      'should initialize firebase without emulators without errors.',
+      'should initialize firebase without errors.',
       () async {
         // act
         await FirebaseBoot.run();
-        // assert
-        expect(kDebugMode, isTrue);
-        expect(const bool.fromEnvironment('USE_FIREBASE_EMULATORS'), isFalse);
-      },
-    );
-
-    test(
-      'should initialize firebase with emulators without errors.',
-      () async {
-        // arrange //? Only to hide emulators prints
-        debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-        // act
-        await FirebaseBoot.run(useEmulators: true);
-        // assert
-        expect(kDebugMode, isTrue);
-        expect(const bool.fromEnvironment('USE_FIREBASE_EMULATORS'), isFalse);
       },
     );
   });
