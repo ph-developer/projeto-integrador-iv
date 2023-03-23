@@ -1,27 +1,20 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_integrador_iv/core/boot/boot.dart';
 
-import 'firebase_options.dart';
+import 'core/router/router.dart';
+import 'core/theme/theme.dart';
 
 Future<void> main() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+  await Boot.run(
+    () => runApp(
+      MaterialApp.router(
+        title: 'Projeto Integrador IV - UNIVESP',
+        themeMode: ThemeMode.light,
+        theme: currentTheme,
+        routerConfig: router,
       ),
-    );
-  }
+    ),
+  );
 }
