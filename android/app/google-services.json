@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "435186186218",
+    "project_id": "projeto-integrador-iv-univesp",
+    "storage_bucket": "projeto-integrador-iv-univesp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435186186218:android:f622da6923459a2764e493",
+        "android_client_info": {
+          "package_name": "com.example.projeto_integrador_iv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435186186218-kc0kqmte3g1kgg21rj2p0m9nfi73tqv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsfooQ1UVONcRi35Sf5CcStPpk9ZtZplQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435186186218-kc0kqmte3g1kgg21rj2p0m9nfi73tqv5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
