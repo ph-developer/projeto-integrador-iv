@@ -1,6 +1,8 @@
 import 'package:auto_injector/auto_injector.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:projeto_integrador_iv/core/errors/error_handler.dart';
+import 'package:projeto_integrador_iv/core/errors/error_handler_impl.dart';
 
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/do_login.dart';
@@ -33,8 +35,11 @@ Future<void> setupInjector([InjectFn? injectFn]) async {
 
 Future<void> _injectCore(Injector injector) async {
   injector
-      //! Firebase
-      .addSingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    //! Firebase
+    ..addSingleton<FirebaseAuth>(() => FirebaseAuth.instance)
+
+    //! Core
+    ..add<IErrorHandler>(ErrorHandlerImpl.new);
 }
 
 Future<void> _injectAuthFeature(Injector injector) async {
