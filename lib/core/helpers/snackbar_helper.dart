@@ -17,6 +17,7 @@ class SnackbarHelper {
         elevation: 0,
         duration: duration ?? defaultDuration,
         backgroundColor: Colors.transparent,
+        padding: EdgeInsets.zero,
         content: SuccessSnackbar(
           message: message,
           duration: duration ?? defaultDuration,
@@ -36,6 +37,7 @@ class SnackbarHelper {
         elevation: 0,
         duration: duration ?? defaultDuration,
         backgroundColor: Colors.transparent,
+        padding: EdgeInsets.zero,
         content: ErrorSnackbar(
           message: message,
           duration: duration ?? defaultDuration,

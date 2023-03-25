@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'base_snackbar.dart';
+import 'mobile/base_mobile_snackbar.dart';
+import 'web/base_web_snackbar.dart';
 
 class ErrorSnackbar extends StatelessWidget {
   final String message;
@@ -14,7 +16,18 @@ class ErrorSnackbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseSnackbar(
+    if (kIsWeb) {
+      return BaseWebSnackbar(
+        message: message,
+        duration: duration,
+        backgroundColor: Theme.of(context).colorScheme.error,
+        progressBarColor: Theme.of(context).colorScheme.errorContainer,
+        textColor: Theme.of(context).colorScheme.onError,
+        icon: Icons.warning_amber_rounded,
+      );
+    }
+
+    return BaseMobileSnackbar(
       message: message,
       duration: duration,
       backgroundColor: Theme.of(context).colorScheme.error,
