@@ -25,7 +25,6 @@ import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/se
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/text_area_input.dart';
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/inputs/text_input.dart';
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/pagination/paginator.dart';
-import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/base_snackbar.dart';
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/error_snackbar.dart';
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/success_snackbar.dart';
 import 'package:projeto_integrador_iv/core/theme/theme.dart';

@@ -1,6 +1,7 @@
 import 'auth/auth_boot.dart';
 import 'firebase/firebase_boot.dart';
 import 'injection/injector_boot.dart';
+import 'mqtt/mqtt_boot.dart';
 import 'router/router_boot.dart';
 import 'sentry/sentry_boot.dart';
 
@@ -10,6 +11,7 @@ abstract class Boot {
     await InjectorBoot.run();
     await AuthBoot.run();
     await RouterBoot.run();
+    await MqttBoot.run();
     await SentryBoot.run(appRunner);
   }
 }

@@ -19,9 +19,11 @@ dependencies:
   go_router: ^6.4.1
   mask: ^1.0.4
   mobx: ^2.1.4
+  mqtt_client: ^9.8.1
   result_dart: ^1.0.5
   sentry_flutter: ^7.2.0
   universal_html: ^2.2.1
+  uuid: ^3.0.7
 
 dev_dependencies:
   build_runner: ^2.3.3

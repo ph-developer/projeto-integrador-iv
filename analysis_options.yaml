@@ -1,5 +1,6 @@
 include: package:flutterando_analysis/flutter.yaml
 
-rules:
-  prefer_single_quotes: true
-  prefer_relative_imports: true
+linter:
+  rules:
+    prefer_single_quotes: true
+    prefer_relative_imports: true

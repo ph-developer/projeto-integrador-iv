@@ -1,0 +1,12 @@
+{
+    "vsmqtt.brokerProfiles": [
+        {
+            "name": "docker",
+            "host": "localhost",
+            "port": 1883,
+            "clientId": "ee0b6dae-c2b4-4d56-b3a4-ebfce8f219c2",
+            "username": "mosquitto",
+            "password": "test"
+        }
+    ]
+}
