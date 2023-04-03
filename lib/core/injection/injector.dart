@@ -1,17 +1,23 @@
 import 'package:auto_injector/auto_injector.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../features/app/domain/repositories/ambient_repository.dart';
-import '../../features/app/domain/usecases/get_real_time_air_conditioner_status.dart';
-import '../../features/app/domain/usecases/get_real_time_humidity.dart';
-import '../../features/app/domain/usecases/get_real_time_temperature.dart';
-import '../../features/app/domain/usecases/turn_air_conditioner_off.dart';
-import '../../features/app/domain/usecases/turn_air_conditioner_on.dart';
+import '../../features/app/domain/usecases/close_ambient.dart';
+import '../../features/app/domain/usecases/get_ambient_by_id.dart';
+import '../../features/app/domain/usecases/get_ambient_sensors.dart';
+import '../../features/app/domain/usecases/get_ambients.dart';
+import '../../features/app/domain/usecases/set_air_conditioner_status.dart';
+import '../../features/app/external/datasources/access_datasource_impl.dart';
 import '../../features/app/external/datasources/ambient_datasource_impl.dart';
+import '../../features/app/external/datasources/iot_datasource_impl.dart';
+import '../../features/app/infra/datasources/access_datasource.dart';
 import '../../features/app/infra/datasources/ambient_datasource.dart';
+import '../../features/app/infra/datasources/iot_datasource.dart';
 import '../../features/app/infra/repositories/ambient_repository_impl.dart';
 import '../../features/app/presentation/stores/ambient_store.dart';
+import '../../features/app/presentation/stores/ambients_store.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/do_login.dart';
 import '../../features/auth/domain/usecases/do_logout.dart';
@@ -22,6 +28,7 @@ import '../../features/auth/infra/repositories/auth_repository_impl.dart';
 import '../../features/auth/presentation/stores/auth_store.dart';
 import '../errors/error_handler.dart';
 import '../errors/error_handler_impl.dart';
+import '../mqtt/mqtt5_broker_impl.dart';
 import '../mqtt/mqtt_broker.dart';
 
 typedef Injector = AutoInjector;
@@ -49,9 +56,10 @@ Future<void> _injectCore(Injector injector) async {
   injector
     //! Firebase
     ..addInstance<FirebaseAuth>(FirebaseAuth.instance)
+    ..addInstance<FirebaseFirestore>(FirebaseFirestore.instance)
 
     //! Core
-    ..addInstance<MqttBroker>(MqttBroker.instance)
+    ..addInstance<IMqttBroker>(Mqtt5Broker())
     ..add<IErrorHandler>(ErrorHandlerImpl.new);
 }
 
@@ -76,19 +84,20 @@ Future<void> _injectApp(Injector injector) async {
   injector
     //! Datasources
     ..add<IAmbientDatasource>(AmbientDatasourceImpl.new)
+    ..add<IAccessDatasource>(AccessDatasourceImpl.new)
+    ..add<IIotDatasource>(IotDatasourceImpl.new)
 
     //! Repositories
     ..add<IAmbientRepository>(AmbientRepositoryImpl.new)
 
     //! Usecases
-    ..add<IGetRealTimeAirConditionerStatus>(
-      GetRealTimeAirConditionerStatusImpl.new,
-    )
-    ..add<IGetRealTimeHumidity>(GetRealTimeHumidityImpl.new)
-    ..add<IGetRealTimeTemperature>(GetRealTimeTemperatureImpl.new)
-    ..add<ITurnAirConditionerOn>(TurnAirConditionerOnImpl.new)
-    ..add<ITurnAirConditionerOff>(TurnAirConditionerOffImpl.new)
+    ..add<IGetAmbientById>(GetAmbientByIdImpl.new)
+    ..add<ICloseAmbient>(CloseAmbientImpl.new)
+    ..add<IGetAmbients>(GetAmbientsImpl.new)
+    ..add<IGetAmbientSensors>(GetAmbientSensorsImpl.new)
+    ..add<ISetAirConditionerStatus>(SetAirConditionerStatusImpl.new)
 
     //! Stores
+    ..add<AmbientsStore>(AmbientsStore.new)
     ..add<AmbientStore>(AmbientStore.new);
 }

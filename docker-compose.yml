@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  mqtt:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    volumes:
+      - ./.docker/mosquitto/config:/mosquitto/config
+      - ./.docker/mosquitto/data:/mosquitto/data
+      - ./.docker/mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - network
+
+  nodered:
+    container_name: nodered
+    image: nodered/node-red
+    volumes:
+      - ./.docker/node-red/data:/data
+    ports:
+      - "1880:1880"
+    networks:
+      - network
+
+networks:
+  network:

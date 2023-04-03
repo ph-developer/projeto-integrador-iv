@@ -1,74 +1,100 @@
-import 'package:mobx/mobx.dart';
-import 'package:result_dart/result_dart.dart';
+// ignore_for_file: library_private_types_in_public_api
 
+import 'package:mobx/mobx.dart';
+
+import '../../domain/entities/ambient.dart';
+import '../../domain/entities/sensors.dart';
 import '../../domain/errors/failures.dart';
-import '../../domain/usecases/get_real_time_air_conditioner_status.dart';
-import '../../domain/usecases/get_real_time_humidity.dart';
-import '../../domain/usecases/get_real_time_temperature.dart';
-import '../../domain/usecases/turn_air_conditioner_off.dart';
-import '../../domain/usecases/turn_air_conditioner_on.dart';
+import '../../domain/usecases/close_ambient.dart';
+import '../../domain/usecases/get_ambient_by_id.dart';
+import '../../domain/usecases/get_ambient_sensors.dart';
+import '../../domain/usecases/set_air_conditioner_status.dart';
 
 part 'ambient_store.g.dart';
 
 class AmbientStore = _AmbientStoreBase with _$AmbientStore;
 
 abstract class _AmbientStoreBase with Store {
-  final IGetRealTimeTemperature _getRealTimeTemperature;
-  final IGetRealTimeHumidity _getRealTimeHumidity;
-  final IGetRealTimeAirConditionerStatus _getRealTimeAirConditionerStatus;
-  final ITurnAirConditionerOn _turnAirConditionerOn;
-  final ITurnAirConditionerOff _turnAirConditionerOff;
+  final IGetAmbientById _getAmbientById;
+  final ICloseAmbient _closeAmbient;
+  final IGetAmbientSensors _getAmbientSensors;
+  final ISetAirConditionerStatus _setAirConditionerStatus;
 
   _AmbientStoreBase(
-    this._getRealTimeTemperature,
-    this._getRealTimeHumidity,
-    this._getRealTimeAirConditionerStatus,
-    this._turnAirConditionerOn,
-    this._turnAirConditionerOff,
-  ) {
-    _getRealTimeTemperature(ambientName).listen((value) => temperature = value);
-    _getRealTimeHumidity(ambientName).listen((value) => humidity = value);
-    _getRealTimeAirConditionerStatus(ambientName).listen((value) {
-      isAirConditionerOn = value;
-      isLoading = false;
-    });
-  }
+    this._getAmbientById,
+    this._closeAmbient,
+    this._getAmbientSensors,
+    this._setAirConditionerStatus,
+  );
 
   @observable
-  bool isLoading = false;
+  bool isFetching = false;
 
   @observable
-  String ambientName = 'sala_01';
+  bool isChangingAirConditionerStatus = false;
 
   @observable
-  double temperature = 0;
+  Ambient? ambient;
 
   @observable
-  double humidity = 0;
+  Sensors? sensors;
 
   @observable
-  bool isAirConditionerOn = false;
-
-  @observable
-  bool _isRecomendatedTurnAirConditionerOn = true;
-
-  @computed
-  bool get isRecomendatedTurnAirConditionerOn =>
-      !isAirConditionerOn && _isRecomendatedTurnAirConditionerOn;
+  AppFailure? failure;
 
   @action
-  Future<void> toggleAirConditionerStatus() async {
-    isLoading = true;
+  Future<void> fetchAmbient(String ambientId) async {
+    isFetching = true;
+    ambient = null;
+    sensors = null;
 
-    _isRecomendatedTurnAirConditionerOn = true;
+    final result1 = await _getAmbientById(ambientId);
 
-    AsyncResult<bool, AppFailure> Function(String) usecase;
-    if (!isAirConditionerOn) {
-      usecase = _turnAirConditionerOn;
-    } else {
-      usecase = _turnAirConditionerOff;
+    result1.fold(
+      (ambient) => this.ambient = ambient,
+      (failure) => this.failure = failure,
+    );
+
+    if (ambient == null) {
+      isFetching = false;
+      return;
     }
 
-    await usecase(ambientName);
+    final result2 = await _getAmbientSensors(ambient!);
+
+    result2.fold(
+      (sensors) => this.sensors = sensors,
+      (failure) => this.failure = failure,
+    );
+
+    isFetching = false;
+  }
+
+  @action
+  Future<void> closeAmbient() async {
+    if (ambient == null) return;
+    isFetching = true;
+
+    final result = await _closeAmbient(ambient!);
+
+    result.fold(
+      (success) => null,
+      (failure) => this.failure = failure,
+    );
+
+    isFetching = false;
+  }
+
+  @action
+  Future<void> setAirConditionerStatus({required bool on}) async {
+    //TODO:
+    // isChangingAirConditionerStatus = true;
+
+    final result = await _setAirConditionerStatus(ambient!, on: on);
+
+    result.fold(
+      (success) => null,
+      (failure) => this.failure = failure,
+    );
   }
 }

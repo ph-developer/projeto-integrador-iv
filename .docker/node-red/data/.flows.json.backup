@@ -1,0 +1,283 @@
+[
+    {
+        "id": "f8dbbc926f70f1c5",
+        "type": "tab",
+        "label": "sala_teste",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7c1ea294fd9c242d",
+        "type": "mqtt-broker",
+        "name": "mosquitto_pi_iv:1883",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "f7936b4a5fea2202",
+        "type": "mqtt in",
+        "z": "f8dbbc926f70f1c5",
+        "name": "",
+        "topic": "sala_teste/setAirConditionerStatus",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "7c1ea294fd9c242d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 320,
+        "y": 460,
+        "wires": [
+            [
+                "5e69853d14c7eeec"
+            ]
+        ]
+    },
+    {
+        "id": "b25f83f8abd65515",
+        "type": "mqtt out",
+        "z": "f8dbbc926f70f1c5",
+        "name": "",
+        "topic": "sala_teste/airConditionerStatus",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "7c1ea294fd9c242d",
+        "x": 1150,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "143ab694c9ed509c",
+        "type": "data-generator",
+        "z": "f8dbbc926f70f1c5",
+        "name": "fn: generate random humidity",
+        "field": "payload",
+        "fieldType": "msg",
+        "syntax": "json",
+        "template": "\"{{ float 80 84 }}\"",
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "1a123373bdf67881"
+            ]
+        ]
+    },
+    {
+        "id": "5d2934de3af16f64",
+        "type": "data-generator",
+        "z": "f8dbbc926f70f1c5",
+        "name": "fn: generate random temperature",
+        "field": "payload",
+        "fieldType": "msg",
+        "syntax": "json",
+        "template": "\"{{ float 30 32 }}\"",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "9b64e4f262ee2a53"
+            ]
+        ]
+    },
+    {
+        "id": "9a19b19f4842a192",
+        "type": "mqtt out",
+        "z": "f8dbbc926f70f1c5",
+        "name": "",
+        "topic": "sala_teste/humidity",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "7c1ea294fd9c242d",
+        "x": 1110,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2031a6f9843d1eb2",
+        "type": "mqtt out",
+        "z": "f8dbbc926f70f1c5",
+        "name": "",
+        "topic": "sala_teste/temperature",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "7c1ea294fd9c242d",
+        "x": 1120,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "9b64e4f262ee2a53",
+        "type": "function",
+        "z": "f8dbbc926f70f1c5",
+        "name": "fn: cut float to 2 decimals",
+        "func": "var dotIndex = msg.payload.indexOf('.');\nmsg.payload = msg.payload.slice(0, dotIndex + 2);\nmsg.payload = parseFloat(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 300,
+        "wires": [
+            [
+                "2031a6f9843d1eb2",
+                "edaec0d1ab8d3fdc"
+            ]
+        ]
+    },
+    {
+        "id": "1a123373bdf67881",
+        "type": "function",
+        "z": "f8dbbc926f70f1c5",
+        "name": "fn: cut float to 2 decimals",
+        "func": "var dotIndex = msg.payload.indexOf('.');\nmsg.payload = msg.payload.slice(0, dotIndex + 2);\nmsg.payload = parseFloat(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 140,
+        "wires": [
+            [
+                "9a19b19f4842a192",
+                "a921787ffc8c27e1"
+            ]
+        ]
+    },
+    {
+        "id": "5e69853d14c7eeec",
+        "type": "function",
+        "z": "f8dbbc926f70f1c5",
+        "name": "fn: convert boolean to string",
+        "func": "msg.payload = msg.payload.toString();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 460,
+        "wires": [
+            [
+                "b25f83f8abd65515",
+                "31cc580cad5bf700"
+            ]
+        ]
+    },
+    {
+        "id": "31cc580cad5bf700",
+        "type": "debug",
+        "z": "f8dbbc926f70f1c5",
+        "name": "print airConditionerStatus",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1140,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "2559d46cdd0b8ebf",
+        "type": "inject",
+        "z": "f8dbbc926f70f1c5",
+        "name": "input: every 3s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 260,
+        "y": 220,
+        "wires": [
+            [
+                "5d2934de3af16f64",
+                "143ab694c9ed509c"
+            ]
+        ]
+    },
+    {
+        "id": "edaec0d1ab8d3fdc",
+        "type": "debug",
+        "z": "f8dbbc926f70f1c5",
+        "name": "print temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "a921787ffc8c27e1",
+        "type": "debug",
+        "z": "f8dbbc926f70f1c5",
+        "name": "print humidity",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1100,
+        "y": 100,
+        "wires": []
+    }
+]

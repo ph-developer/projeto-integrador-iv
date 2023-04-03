@@ -9,132 +9,122 @@ part of 'ambient_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AmbientStore on _AmbientStoreBase, Store {
-  Computed<bool>? _$isRecomendatedTurnAirConditionerOnComputed;
+  late final _$isFetchingAtom =
+      Atom(name: '_AmbientStoreBase.isFetching', context: context);
 
   @override
-  bool get isRecomendatedTurnAirConditionerOn =>
-      (_$isRecomendatedTurnAirConditionerOnComputed ??= Computed<bool>(
-              () => super.isRecomendatedTurnAirConditionerOn,
-              name: '_AmbientStoreBase.isRecomendatedTurnAirConditionerOn'))
-          .value;
-
-  late final _$isLoadingAtom =
-      Atom(name: '_AmbientStoreBase.isLoading', context: context);
-
-  @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
+  bool get isFetching {
+    _$isFetchingAtom.reportRead();
+    return super.isFetching;
   }
 
   @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
+  set isFetching(bool value) {
+    _$isFetchingAtom.reportWrite(value, super.isFetching, () {
+      super.isFetching = value;
     });
   }
 
-  late final _$ambientNameAtom =
-      Atom(name: '_AmbientStoreBase.ambientName', context: context);
-
-  @override
-  String get ambientName {
-    _$ambientNameAtom.reportRead();
-    return super.ambientName;
-  }
-
-  @override
-  set ambientName(String value) {
-    _$ambientNameAtom.reportWrite(value, super.ambientName, () {
-      super.ambientName = value;
-    });
-  }
-
-  late final _$temperatureAtom =
-      Atom(name: '_AmbientStoreBase.temperature', context: context);
-
-  @override
-  double get temperature {
-    _$temperatureAtom.reportRead();
-    return super.temperature;
-  }
-
-  @override
-  set temperature(double value) {
-    _$temperatureAtom.reportWrite(value, super.temperature, () {
-      super.temperature = value;
-    });
-  }
-
-  late final _$humidityAtom =
-      Atom(name: '_AmbientStoreBase.humidity', context: context);
-
-  @override
-  double get humidity {
-    _$humidityAtom.reportRead();
-    return super.humidity;
-  }
-
-  @override
-  set humidity(double value) {
-    _$humidityAtom.reportWrite(value, super.humidity, () {
-      super.humidity = value;
-    });
-  }
-
-  late final _$isAirConditionerOnAtom =
-      Atom(name: '_AmbientStoreBase.isAirConditionerOn', context: context);
-
-  @override
-  bool get isAirConditionerOn {
-    _$isAirConditionerOnAtom.reportRead();
-    return super.isAirConditionerOn;
-  }
-
-  @override
-  set isAirConditionerOn(bool value) {
-    _$isAirConditionerOnAtom.reportWrite(value, super.isAirConditionerOn, () {
-      super.isAirConditionerOn = value;
-    });
-  }
-
-  late final _$_isRecomendatedTurnAirConditionerOnAtom = Atom(
-      name: '_AmbientStoreBase._isRecomendatedTurnAirConditionerOn',
+  late final _$isChangingAirConditionerStatusAtom = Atom(
+      name: '_AmbientStoreBase.isChangingAirConditionerStatus',
       context: context);
 
   @override
-  bool get _isRecomendatedTurnAirConditionerOn {
-    _$_isRecomendatedTurnAirConditionerOnAtom.reportRead();
-    return super._isRecomendatedTurnAirConditionerOn;
+  bool get isChangingAirConditionerStatus {
+    _$isChangingAirConditionerStatusAtom.reportRead();
+    return super.isChangingAirConditionerStatus;
   }
 
   @override
-  set _isRecomendatedTurnAirConditionerOn(bool value) {
-    _$_isRecomendatedTurnAirConditionerOnAtom
-        .reportWrite(value, super._isRecomendatedTurnAirConditionerOn, () {
-      super._isRecomendatedTurnAirConditionerOn = value;
+  set isChangingAirConditionerStatus(bool value) {
+    _$isChangingAirConditionerStatusAtom
+        .reportWrite(value, super.isChangingAirConditionerStatus, () {
+      super.isChangingAirConditionerStatus = value;
     });
   }
 
-  late final _$toggleAirConditionerStatusAsyncAction = AsyncAction(
-      '_AmbientStoreBase.toggleAirConditionerStatus',
+  late final _$ambientAtom =
+      Atom(name: '_AmbientStoreBase.ambient', context: context);
+
+  @override
+  Ambient? get ambient {
+    _$ambientAtom.reportRead();
+    return super.ambient;
+  }
+
+  @override
+  set ambient(Ambient? value) {
+    _$ambientAtom.reportWrite(value, super.ambient, () {
+      super.ambient = value;
+    });
+  }
+
+  late final _$sensorsAtom =
+      Atom(name: '_AmbientStoreBase.sensors', context: context);
+
+  @override
+  Sensors? get sensors {
+    _$sensorsAtom.reportRead();
+    return super.sensors;
+  }
+
+  @override
+  set sensors(Sensors? value) {
+    _$sensorsAtom.reportWrite(value, super.sensors, () {
+      super.sensors = value;
+    });
+  }
+
+  late final _$failureAtom =
+      Atom(name: '_AmbientStoreBase.failure', context: context);
+
+  @override
+  AppFailure? get failure {
+    _$failureAtom.reportRead();
+    return super.failure;
+  }
+
+  @override
+  set failure(AppFailure? value) {
+    _$failureAtom.reportWrite(value, super.failure, () {
+      super.failure = value;
+    });
+  }
+
+  late final _$fetchAmbientAsyncAction =
+      AsyncAction('_AmbientStoreBase.fetchAmbient', context: context);
+
+  @override
+  Future<void> fetchAmbient(String ambientId) {
+    return _$fetchAmbientAsyncAction.run(() => super.fetchAmbient(ambientId));
+  }
+
+  late final _$closeAmbientAsyncAction =
+      AsyncAction('_AmbientStoreBase.closeAmbient', context: context);
+
+  @override
+  Future<void> closeAmbient() {
+    return _$closeAmbientAsyncAction.run(() => super.closeAmbient());
+  }
+
+  late final _$setAirConditionerStatusAsyncAction = AsyncAction(
+      '_AmbientStoreBase.setAirConditionerStatus',
       context: context);
 
   @override
-  Future<void> toggleAirConditionerStatus() {
-    return _$toggleAirConditionerStatusAsyncAction
-        .run(() => super.toggleAirConditionerStatus());
+  Future<void> setAirConditionerStatus({required bool on}) {
+    return _$setAirConditionerStatusAsyncAction
+        .run(() => super.setAirConditionerStatus(on: on));
   }
 
   @override
   String toString() {
     return '''
-isLoading: ${isLoading},
-ambientName: ${ambientName},
-temperature: ${temperature},
-humidity: ${humidity},
-isAirConditionerOn: ${isAirConditionerOn},
-isRecomendatedTurnAirConditionerOn: ${isRecomendatedTurnAirConditionerOn}
+isFetching: ${isFetching},
+isChangingAirConditionerStatus: ${isChangingAirConditionerStatus},
+ambient: ${ambient},
+sensors: ${sensors},
+failure: ${failure}
     ''';
   }
 }

@@ -28,7 +28,7 @@ import 'package:projeto_integrador_iv/core/theme/design_system/widgets/paginatio
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/error_snackbar.dart';
 import 'package:projeto_integrador_iv/core/theme/design_system/widgets/snackbars/success_snackbar.dart';
 import 'package:projeto_integrador_iv/core/theme/theme.dart';
-import 'package:projeto_integrador_iv/features/app/presentation/pages/hello_world_page.dart';
+import 'package:projeto_integrador_iv/features/app/presentation/pages/ambient_page.dart';
 import 'package:projeto_integrador_iv/features/auth/domain/entities/logged_user.dart';
 import 'package:projeto_integrador_iv/features/auth/domain/errors/failures.dart';
 import 'package:projeto_integrador_iv/features/auth/domain/repositories/auth_repository.dart';

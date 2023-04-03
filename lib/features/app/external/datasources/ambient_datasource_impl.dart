@@ -1,37 +1,51 @@
-import '../../../../core/mqtt/mqtt_broker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../domain/entities/ambient.dart';
+import '../../domain/errors/failures.dart';
 import '../../infra/datasources/ambient_datasource.dart';
+import '../dtos/ambient_dto.dart';
 
 class AmbientDatasourceImpl extends IAmbientDatasource {
-  final MqttBroker _mqttBroker;
+  final FirebaseFirestore _firebaseFirestore;
 
-  AmbientDatasourceImpl(this._mqttBroker);
+  AmbientDatasourceImpl(
+    this._firebaseFirestore,
+  );
 
   @override
-  Stream<double> getRealTimeTemperature(String ambientId) {
-    return _mqttBroker.subscribeDouble(ambientId, 'temperature');
+  Future<Ambient> getAmbientById(String ambientId) async {
+    final colRef = _firebaseFirestore.collection('ambients');
+    final docRef = colRef.doc(ambientId);
+    final docSnapshot = await docRef.get();
+
+    if (!docSnapshot.exists) {
+      throw const AmbientNotFound();
+    }
+
+    final ambientMap = {
+      ...docSnapshot.data()!,
+      'id': ambientId,
+    };
+    final ambient = AmbientDTO.fromMap(ambientMap);
+
+    return ambient;
   }
 
   @override
-  Stream<double> getRealTimeHumidity(String ambientId) {
-    return _mqttBroker.subscribeDouble(ambientId, 'humidity');
-  }
+  Future<List<Ambient>> getAmbients(List<String> ids) async {
+    final colRef = _firebaseFirestore.collection('ambients');
+    final query = colRef.where(FieldPath.documentId, whereIn: ids);
+    final docsSnapshot = await query.get();
+    final docsMap = docsSnapshot.docs;
+    final ambients = docsMap
+        .map((snapshot) {
+          final map = snapshot.data();
+          map['id'] = snapshot.id;
+          return map;
+        })
+        .map(AmbientDTO.fromMap)
+        .toList();
 
-  @override
-  Stream<bool> getRealTimeAirConditionerStatus(String ambientId) {
-    return _mqttBroker.subscribeBool(ambientId, 'airConditionerStatus');
-  }
-
-  @override
-  Future<bool> turnAirConditionerOn(String ambientId) async {
-    await _mqttBroker.publishBool(ambientId, 'setAirConditionerStatus', true);
-    await _mqttBroker.publishBool(ambientId, 'airConditionerStatus', true);
-    return true;
-  }
-
-  @override
-  Future<bool> turnAirConditionerOff(String ambientId) async {
-    await _mqttBroker.publishBool(ambientId, 'setAirConditionerStatus', false);
-    await _mqttBroker.publishBool(ambientId, 'airConditionerStatus', false);
-    return true;
+    return ambients;
   }
 }

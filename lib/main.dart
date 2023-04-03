@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_integrador_iv/core/boot/boot.dart';
 
+import 'core/boot/boot.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
 

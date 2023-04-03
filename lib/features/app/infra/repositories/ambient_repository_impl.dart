@@ -1,37 +1,39 @@
 import 'package:result_dart/result_dart.dart';
 
 import '../../../../core/errors/error_handler.dart';
+import '../../domain/entities/ambient.dart';
+import '../../domain/entities/sensors.dart';
 import '../../domain/errors/failures.dart';
 import '../../domain/repositories/ambient_repository.dart';
+import '../datasources/access_datasource.dart';
 import '../datasources/ambient_datasource.dart';
+import '../datasources/iot_datasource.dart';
 
 class AmbientRepositoryImpl extends IAmbientRepository {
   final IAmbientDatasource _ambientDatasource;
+  final IAccessDatasource _accessDatasource;
+  final IIotDatasource _iotDatasource;
   final IErrorHandler _errorHandler;
 
-  AmbientRepositoryImpl(this._ambientDatasource, this._errorHandler);
+  AmbientRepositoryImpl(
+    this._ambientDatasource,
+    this._accessDatasource,
+    this._iotDatasource,
+    this._errorHandler,
+  );
 
   @override
-  Stream<double> getRealTimeTemperature(String ambientId) {
-    return _ambientDatasource.getRealTimeTemperature(ambientId);
-  }
-
-  @override
-  Stream<double> getRealTimeHumidity(String ambientId) {
-    return _ambientDatasource.getRealTimeHumidity(ambientId);
-  }
-
-  @override
-  Stream<bool> getRealTimeAirConditionerStatus(String ambientId) {
-    return _ambientDatasource.getRealTimeAirConditionerStatus(ambientId);
-  }
-
-  @override
-  AsyncResult<bool, AppFailure> turnAirConditionerOn(String ambientId) async {
+  AsyncResult<List<Ambient>, AppFailure> getAmbients() async {
     try {
-      await _ambientDatasource.turnAirConditionerOn(ambientId);
+      final access = await _accessDatasource.getLoggedUserAccess();
 
-      return const Success(true);
+      if (access == null || access.ambients.isEmpty) {
+        return const Success([]);
+      }
+
+      final ambients = await _ambientDatasource.getAmbients(access.ambients);
+
+      return Success(ambients);
     } on AppFailure catch (failure) {
       return Failure(failure);
     } catch (exception, stackTrace) {
@@ -41,9 +43,56 @@ class AmbientRepositoryImpl extends IAmbientRepository {
   }
 
   @override
-  AsyncResult<bool, AppFailure> turnAirConditionerOff(String ambientId) async {
+  AsyncResult<Ambient, AppFailure> getAmbientById(String ambientId) async {
     try {
-      await _ambientDatasource.turnAirConditionerOff(ambientId);
+      final ambient = await _ambientDatasource.getAmbientById(ambientId);
+
+      await _iotDatasource.connectAmbient(ambient);
+
+      return Success(ambient);
+    } on AppFailure catch (failure) {
+      return Failure(failure);
+    } catch (exception, stackTrace) {
+      await _errorHandler.reportException(exception, stackTrace);
+      return const Failure(UnknownError());
+    }
+  }
+
+  @override
+  AsyncResult<Unit, AppFailure> closeAmbient(Ambient ambient) async {
+    try {
+      await _iotDatasource.disconnectAmbient(ambient);
+
+      return const Success(unit);
+    } on AppFailure catch (failure) {
+      return Failure(failure);
+    } catch (exception, stackTrace) {
+      await _errorHandler.reportException(exception, stackTrace);
+      return const Failure(UnknownError());
+    }
+  }
+
+  @override
+  AsyncResult<Sensors, AppFailure> getAmbientSensors(Ambient ambient) async {
+    try {
+      final result = await _iotDatasource.getAmbientSensors(ambient);
+
+      return Success(result);
+    } on AppFailure catch (failure) {
+      return Failure(failure);
+    } catch (exception, stackTrace) {
+      await _errorHandler.reportException(exception, stackTrace);
+      return const Failure(UnknownError());
+    }
+  }
+
+  @override
+  AsyncResult<bool, AppFailure> setAirConditionerStatus(
+    Ambient ambient, {
+    required bool on,
+  }) async {
+    try {
+      await _iotDatasource.setAirConditionerStatus(ambient, on: on);
 
       return const Success(true);
     } on AppFailure catch (failure) {

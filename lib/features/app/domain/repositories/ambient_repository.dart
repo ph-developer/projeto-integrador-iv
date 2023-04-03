@@ -1,11 +1,16 @@
 import 'package:result_dart/result_dart.dart';
 
+import '../entities/ambient.dart';
+import '../entities/sensors.dart';
 import '../errors/failures.dart';
 
 abstract class IAmbientRepository {
-  Stream<double> getRealTimeTemperature(String ambientId);
-  Stream<double> getRealTimeHumidity(String ambientId);
-  Stream<bool> getRealTimeAirConditionerStatus(String ambientId);
-  AsyncResult<bool, AppFailure> turnAirConditionerOn(String ambientId);
-  AsyncResult<bool, AppFailure> turnAirConditionerOff(String ambientId);
+  AsyncResult<List<Ambient>, AppFailure> getAmbients();
+  AsyncResult<Ambient, AppFailure> getAmbientById(String ambientId);
+  AsyncResult<Unit, AppFailure> closeAmbient(Ambient ambient);
+  AsyncResult<Sensors, AppFailure> getAmbientSensors(Ambient ambient);
+  AsyncResult<bool, AppFailure> setAirConditionerStatus(
+    Ambient ambient, {
+    required bool on,
+  });
 }
