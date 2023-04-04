@@ -57,74 +57,74 @@ class Mqtt3Broker implements IMqttBroker {
   @override
   Future<void> publish<T>(String connectionId, String topic, T value) async {
     final client = _getClient(connectionId);
-    final builder = MqttClientPayloadBuilder();
 
-    if (value is String) {
-      builder.addString(value);
-    } else if (value is int) {
-      builder.addInt(value);
-    } else if (value is double) {
-      builder.addDouble(value);
-    } else if (value is bool) {
-      builder.addBool(val: value);
-    } else {
-      throw Exception('Publish type $T is not implemented.');
+    if (client != null) {
+      final builder = MqttClientPayloadBuilder();
+
+      if (value is String) {
+        builder.addString(value);
+      } else if (value is int) {
+        builder.addInt(value);
+      } else if (value is double) {
+        builder.addDouble(value);
+      } else if (value is bool) {
+        builder.addBool(val: value);
+      } else {
+        throw Exception('Publish type $T is not implemented.');
+      }
+
+      final payload = builder.payload!;
+      client.publishMessage(topic, MqttQos.atLeastOnce, payload, retain: true);
     }
-
-    final payload = builder.payload!;
-    client.publishMessage(topic, MqttQos.atLeastOnce, payload, retain: true);
   }
 
   @override
   Stream<T> subscribe<T>(String connectionId, String topic, T initial) async* {
     yield initial;
     final client = _getClient(connectionId);
-    final stream = client.updates!
-        .map((events) => events.where((event) => event.topic == topic))
-        .where((events) => events.isNotEmpty)
-        .map((events) => events.first.payload as MqttPublishMessage)
-        .map((payload) => payload.payload.message)
-        .map((bytes) {
-      if (bytes.length == 1) {
-        if (bytes.first == 1) return 'true';
-        if (bytes.first == 0) return 'false';
+
+    if (client != null) {
+      final stream = client.updates!
+          .map((events) => events.where((event) => event.topic == topic))
+          .where((events) => events.isNotEmpty)
+          .map((events) => events.first.payload as MqttPublishMessage)
+          .map((payload) => payload.payload.message)
+          .map((bytes) {
+        if (bytes.length == 1) {
+          if (bytes.first == 1) return 'true';
+          if (bytes.first == 0) return 'false';
+        }
+        return MqttPublishPayload.bytesToStringAsString(bytes);
+      });
+
+      client.subscribe(topic, MqttQos.atLeastOnce);
+
+      if (initial is String) {
+        yield* stream.map((value) => value as T);
+      } else if (initial is int) {
+        yield* stream
+            .map(int.tryParse)
+            .where((value) => value != null)
+            .map((value) => value!)
+            .map((value) => value as T);
+      } else if (initial is double) {
+        yield* stream
+            .map(double.tryParse)
+            .where((value) => value != null)
+            .map((value) => value!)
+            .map((value) => value as T);
+      } else if (initial is bool) {
+        yield* stream
+            .where((str) => str == 'true' || str == 'false')
+            .map((str) => str == 'true')
+            .map((value) => value as T);
+      } else {
+        throw Exception('Subscribe type $T is not implemented.');
       }
-      return MqttPublishPayload.bytesToStringAsString(bytes);
-    });
-
-    client.subscribe(topic, MqttQos.atLeastOnce);
-
-    if (initial is String) {
-      yield* stream.map((value) => value as T);
-    } else if (initial is int) {
-      yield* stream
-          .map(int.tryParse)
-          .where((value) => value != null)
-          .map((value) => value!)
-          .map((value) => value as T);
-    } else if (initial is double) {
-      yield* stream
-          .map(double.tryParse)
-          .where((value) => value != null)
-          .map((value) => value!)
-          .map((value) => value as T);
-    } else if (initial is bool) {
-      yield* stream
-          .where((str) => str == 'true' || str == 'false')
-          .map((str) => str == 'true')
-          .map((value) => value as T);
-    } else {
-      throw Exception('Subscribe type $T is not implemented.');
     }
   }
 
-  MqttServerClient _getClient(String connectionId) {
-    final client = _clients[connectionId];
-
-    if (client == null) {
-      throw Exception('Client not exists.');
-    }
-
-    return client;
+  MqttServerClient? _getClient(String connectionId) {
+    return _clients[connectionId];
   }
 }
