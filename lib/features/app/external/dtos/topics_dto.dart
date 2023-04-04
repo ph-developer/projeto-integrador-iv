@@ -5,10 +5,18 @@ extension TopicsDTO on Topics {
     String prefix(String topic) => '${map['_prefix'] ?? ''}$topic';
 
     return Topics(
-      temperature: prefix(map['temperature'] ?? ''),
-      humidity: prefix(map['humidity'] ?? ''),
-      airConditionerStatus: prefix(map['air_conditioner_status'] ?? ''),
-      setAirConditionerStatus: prefix(map['set_air_conditioner_status'] ?? ''),
+      temperature: prefix(
+        map['temperature'] ?? 'temperature',
+      ),
+      humidity: prefix(
+        map['humidity'] ?? 'humidity',
+      ),
+      airConditionerStatus: prefix(
+        map['air_conditioner_status'] ?? 'airConditionerStatus',
+      ),
+      setAirConditionerStatus: prefix(
+        map['set_air_conditioner_status'] ?? 'setAirConditionerStatus',
+      ),
     );
   }
 }
