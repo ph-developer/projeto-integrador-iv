@@ -9,6 +9,7 @@ import '../../../../core/router/router.dart';
 import '../../../auth/domain/entities/logged_user.dart';
 import '../../../auth/presentation/stores/auth_store.dart';
 import '../stores/ambients_store.dart';
+import '../widgets/ambient_tile.dart';
 
 class AmbientsPage extends StatefulWidget {
   const AmbientsPage({super.key});
@@ -90,9 +91,9 @@ class _AmbientsPageState extends State<AmbientsPage> {
             itemBuilder: (context, index) {
               final ambient = ambients[index];
 
-              return ListTile(
-                title: Text(ambient.name),
-                onTap: () => _onSelect(ambient.id),
+              return AmbientTile(
+                ambient: ambient,
+                onSelect: _onSelect,
               );
             },
           );
