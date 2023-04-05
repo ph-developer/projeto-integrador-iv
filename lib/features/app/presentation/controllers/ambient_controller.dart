@@ -10,17 +10,17 @@ import '../../domain/usecases/get_ambient_by_id.dart';
 import '../../domain/usecases/get_ambient_sensors.dart';
 import '../../domain/usecases/set_air_conditioner_status.dart';
 
-part 'ambient_store.g.dart';
+part 'ambient_controller.g.dart';
 
-class AmbientStore = _AmbientStoreBase with _$AmbientStore;
+class AmbientController = _AmbientControllerBase with _$AmbientController;
 
-abstract class _AmbientStoreBase with Store {
+abstract class _AmbientControllerBase with Store {
   final IGetAmbientById _getAmbientById;
   final ICloseAmbient _closeAmbient;
   final IGetAmbientSensors _getAmbientSensors;
   final ISetAirConditionerStatus _setAirConditionerStatus;
 
-  _AmbientStoreBase(
+  _AmbientControllerBase(
     this._getAmbientById,
     this._closeAmbient,
     this._getAmbientSensors,
@@ -44,6 +44,8 @@ abstract class _AmbientStoreBase with Store {
 
   @action
   Future<void> fetchAmbient(String ambientId) async {
+    if (isFetching) return;
+
     isFetching = true;
     ambient = null;
     sensors = null;
@@ -72,7 +74,7 @@ abstract class _AmbientStoreBase with Store {
 
   @action
   Future<void> closeAmbient() async {
-    if (ambient == null) return;
+    if (ambient == null || isFetching) return;
     isFetching = true;
 
     final result = await _closeAmbient(ambient!);
@@ -87,8 +89,7 @@ abstract class _AmbientStoreBase with Store {
 
   @action
   Future<void> setAirConditionerStatus({required bool on}) async {
-    //TODO:
-    // isChangingAirConditionerStatus = true;
+    if (isFetching) return;
 
     final result = await _setAirConditionerStatus(ambient!, on: on);
 

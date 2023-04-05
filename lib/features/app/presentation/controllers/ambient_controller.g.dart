@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ambient_store.dart';
+part of 'ambient_controller.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,9 @@ part of 'ambient_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$AmbientStore on _AmbientStoreBase, Store {
+mixin _$AmbientController on _AmbientControllerBase, Store {
   late final _$isFetchingAtom =
-      Atom(name: '_AmbientStoreBase.isFetching', context: context);
+      Atom(name: '_AmbientControllerBase.isFetching', context: context);
 
   @override
   bool get isFetching {
@@ -26,7 +26,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$isChangingAirConditionerStatusAtom = Atom(
-      name: '_AmbientStoreBase.isChangingAirConditionerStatus',
+      name: '_AmbientControllerBase.isChangingAirConditionerStatus',
       context: context);
 
   @override
@@ -44,7 +44,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$ambientAtom =
-      Atom(name: '_AmbientStoreBase.ambient', context: context);
+      Atom(name: '_AmbientControllerBase.ambient', context: context);
 
   @override
   Ambient? get ambient {
@@ -60,7 +60,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$sensorsAtom =
-      Atom(name: '_AmbientStoreBase.sensors', context: context);
+      Atom(name: '_AmbientControllerBase.sensors', context: context);
 
   @override
   Sensors? get sensors {
@@ -76,7 +76,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$failureAtom =
-      Atom(name: '_AmbientStoreBase.failure', context: context);
+      Atom(name: '_AmbientControllerBase.failure', context: context);
 
   @override
   AppFailure? get failure {
@@ -92,7 +92,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$fetchAmbientAsyncAction =
-      AsyncAction('_AmbientStoreBase.fetchAmbient', context: context);
+      AsyncAction('_AmbientControllerBase.fetchAmbient', context: context);
 
   @override
   Future<void> fetchAmbient(String ambientId) {
@@ -100,7 +100,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$closeAmbientAsyncAction =
-      AsyncAction('_AmbientStoreBase.closeAmbient', context: context);
+      AsyncAction('_AmbientControllerBase.closeAmbient', context: context);
 
   @override
   Future<void> closeAmbient() {
@@ -108,7 +108,7 @@ mixin _$AmbientStore on _AmbientStoreBase, Store {
   }
 
   late final _$setAirConditionerStatusAsyncAction = AsyncAction(
-      '_AmbientStoreBase.setAirConditionerStatus',
+      '_AmbientControllerBase.setAirConditionerStatus',
       context: context);
 
   @override

@@ -10,7 +10,7 @@
     {
         "id": "7c1ea294fd9c242d",
         "type": "mqtt-broker",
-        "name": "mosquitto_pi_iv:1883",
+        "name": "mosquitto:1883",
         "broker": "mosquitto",
         "port": "1883",
         "clientid": "",

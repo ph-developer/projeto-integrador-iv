@@ -8,6 +8,7 @@ class TextInput extends StatelessWidget {
   final List<TextInputFormatter> formatters;
   final TextEditingController controller;
   final String label;
+  final String? placeholder;
   final FocusNode? focusNode;
   final Function(String)? onSubmitted;
 
@@ -19,6 +20,7 @@ class TextInput extends StatelessWidget {
     this.formatters = const [],
     this.focusNode,
     this.onSubmitted,
+    this.placeholder,
     required this.controller,
     required this.label,
   });
@@ -37,6 +39,7 @@ class TextInput extends StatelessWidget {
       ),
       decoration: InputDecoration(
         label: Text(label),
+        hintText: placeholder,
         border: const OutlineInputBorder(),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: true,

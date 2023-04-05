@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 
 import '../../features/app/domain/repositories/ambient_repository.dart';
 import '../../features/app/domain/usecases/close_ambient.dart';
+import '../../features/app/domain/usecases/delete_ambient.dart';
 import '../../features/app/domain/usecases/get_ambient_by_id.dart';
 import '../../features/app/domain/usecases/get_ambient_sensors.dart';
 import '../../features/app/domain/usecases/get_ambients.dart';
+import '../../features/app/domain/usecases/save_ambient.dart';
 import '../../features/app/domain/usecases/set_air_conditioner_status.dart';
 import '../../features/app/external/datasources/access_datasource_impl.dart';
 import '../../features/app/external/datasources/ambient_datasource_impl.dart';
@@ -16,8 +18,9 @@ import '../../features/app/infra/datasources/access_datasource.dart';
 import '../../features/app/infra/datasources/ambient_datasource.dart';
 import '../../features/app/infra/datasources/iot_datasource.dart';
 import '../../features/app/infra/repositories/ambient_repository_impl.dart';
-import '../../features/app/presentation/stores/ambient_store.dart';
-import '../../features/app/presentation/stores/ambients_store.dart';
+import '../../features/app/presentation/controllers/ambient_controller.dart';
+import '../../features/app/presentation/controllers/ambients_controller.dart';
+import '../../features/app/presentation/controllers/edit_ambient_controller.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/do_login.dart';
 import '../../features/auth/domain/usecases/do_logout.dart';
@@ -92,12 +95,15 @@ Future<void> _injectApp(Injector injector) async {
 
     //! Usecases
     ..add<IGetAmbientById>(GetAmbientByIdImpl.new)
+    ..add<ISaveAmbient>(SaveAmbientImpl.new)
+    ..add<IDeleteAmbient>(DeleteAmbientImpl.new)
     ..add<ICloseAmbient>(CloseAmbientImpl.new)
     ..add<IGetAmbients>(GetAmbientsImpl.new)
     ..add<IGetAmbientSensors>(GetAmbientSensorsImpl.new)
     ..add<ISetAirConditionerStatus>(SetAirConditionerStatusImpl.new)
 
-    //! Stores
-    ..add<AmbientsStore>(AmbientsStore.new)
-    ..add<AmbientStore>(AmbientStore.new);
+    //! Controllers
+    ..add<AmbientsController>(AmbientsController.new)
+    ..add<AmbientController>(AmbientController.new)
+    ..add<EditAmbientController>(EditAmbientController.new);
 }

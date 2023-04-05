@@ -6,9 +6,10 @@ import '../../../../core/errors/failure.dart';
 import '../../../../core/helpers/snackbar_helper.dart';
 import '../../../../core/injection/injector.dart';
 import '../../../../core/router/router.dart';
+import '../../../../core/theme/theme.dart';
 import '../../../auth/domain/entities/logged_user.dart';
 import '../../../auth/presentation/stores/auth_store.dart';
-import '../stores/ambients_store.dart';
+import '../controllers/ambients_controller.dart';
 import '../widgets/ambient_tile.dart';
 
 class AmbientsPage extends StatefulWidget {
@@ -21,17 +22,17 @@ class AmbientsPage extends StatefulWidget {
 class _AmbientsPageState extends State<AmbientsPage> {
   final reactionDisposers = <ReactionDisposer>[];
   final authStore = inject<AuthStore>();
-  final ambientsStore = inject<AmbientsStore>();
+  final controller = inject<AmbientsController>();
 
   @override
   void initState() {
     super.initState();
     reactionDisposers.addAll([
-      reaction((_) => ambientsStore.failure, _onFailure),
+      reaction((_) => controller.failure, _onFailure),
       reaction((_) => authStore.failure, _onFailure),
       reaction((_) => authStore.loggedUser, _onLoggedOut),
     ]);
-    ambientsStore.fetchAmbients();
+    controller.fetchAmbients();
   }
 
   @override
@@ -42,24 +43,32 @@ class _AmbientsPageState extends State<AmbientsPage> {
     super.dispose();
   }
 
-  Future<void> _onFailure(Failure? failure) async {
+  void _onFailure(Failure? failure) {
     if (failure != null) {
       context.showErrorSnackbar(failure.message);
     }
   }
 
-  Future<void> _onSelect(String ambientId) async {
-    await context.navigateTo('/ambient/$ambientId', replace: false);
+  void _onSelect(String ambientId) {
+    context.navigateTo('/ambient/$ambientId', replace: false);
   }
 
-  Future<void> _onLogout([dynamic _]) async {
-    await authStore.doLogout();
+  void _onLogout([dynamic _]) {
+    authStore.doLogout();
   }
 
-  Future<void> _onLoggedOut(LoggedUser? loggedUser) async {
+  void _onLoggedOut(LoggedUser? loggedUser) {
     if (loggedUser == null) {
-      await context.navigateTo('/login');
+      context.navigateTo('/login');
     }
+  }
+
+  void _addAmbient() {
+    context.navigateTo('/edit-ambient');
+  }
+
+  void _onRefresh() {
+    controller.fetchAmbients();
   }
 
   @override
@@ -70,15 +79,19 @@ class _AmbientsPageState extends State<AmbientsPage> {
         centerTitle: true,
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: _onRefresh,
+          ),
+          IconButton(
             icon: const Icon(Icons.logout_rounded),
             onPressed: _onLogout,
-          )
+          ),
         ],
       ),
       body: Observer(
         builder: (_) {
-          final isFetching = ambientsStore.isFetching;
-          final ambients = ambientsStore.ambients;
+          final isFetching = controller.isFetching;
+          final ambients = controller.ambients;
 
           if (isFetching) {
             return const Center(
@@ -87,8 +100,21 @@ class _AmbientsPageState extends State<AmbientsPage> {
           }
 
           return ListView.builder(
-            itemCount: ambients.length,
+            itemCount: ambients.length + 1,
             itemBuilder: (context, index) {
+              if (index == ambients.length) {
+                return ListTile(
+                  title: Center(
+                    child: OutlineButton(
+                      type: ButtonType.primary,
+                      onPressed: _addAmbient,
+                      label: 'Adicionar Ambiente',
+                      icon: Icons.add_rounded,
+                    ),
+                  ),
+                );
+              }
+
               final ambient = ambients[index];
 
               return AmbientTile(

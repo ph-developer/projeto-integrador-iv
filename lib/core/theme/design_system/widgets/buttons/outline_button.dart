@@ -35,7 +35,6 @@ class OutlineButton extends StatelessWidget {
       icon: Icon(icon),
       label: Text(label),
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(140, 45),
         foregroundColor: getColor(context),
         side: BorderSide(
           color:

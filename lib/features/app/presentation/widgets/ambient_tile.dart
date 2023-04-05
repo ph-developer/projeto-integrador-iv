@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/ambient.dart';
+import 'ambient_info_dialog.dart';
 
 enum _ConnectionStatus { online, offline, loading }
 
@@ -24,12 +25,13 @@ class AmbientTile extends StatefulWidget {
 class _AmbientTileState extends State<AmbientTile> {
   _ConnectionStatus _connectionStatus = _ConnectionStatus.loading;
   Timer? _timer;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _timer = Timer.periodic(
-      const Duration(seconds: 10),
+      const Duration(seconds: 5),
       (timer) => _verifyConnectionStatus(),
     );
     _verifyConnectionStatus();
@@ -42,7 +44,12 @@ class _AmbientTileState extends State<AmbientTile> {
   }
 
   Future<void> _verifyConnectionStatus() async {
+    if (isLoading) return;
+
     try {
+      setState(() {
+        isLoading = true;
+      });
       await Socket.connect(
         widget.ambient.host,
         widget.ambient.port,
@@ -50,82 +57,81 @@ class _AmbientTileState extends State<AmbientTile> {
       );
       setState(() {
         _connectionStatus = _ConnectionStatus.online;
+        isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _connectionStatus = _ConnectionStatus.offline;
-      });
+      try {
+        setState(() {
+          _connectionStatus = _ConnectionStatus.offline;
+          isLoading = false;
+        });
+      } catch (_) {}
     }
   }
 
   void _showInfoModal(BuildContext context) {
+    var connectionStatus = 'Carregando...';
+
+    if (_connectionStatus == _ConnectionStatus.online) {
+      connectionStatus = 'Online';
+    } else if (_connectionStatus == _ConnectionStatus.offline) {
+      connectionStatus = 'Offline';
+    }
+
     showDialog(
       context: context,
-      builder: (context) {
-        var status = 'Carregando...';
-
-        if (_connectionStatus == _ConnectionStatus.online) {
-          status = 'Online';
-        } else if (_connectionStatus == _ConnectionStatus.offline) {
-          status = 'Offline';
-        }
-
-        return AlertDialog(
-          title: Center(child: Text(widget.ambient.name)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Host: ${widget.ambient.host}:${widget.ambient.port}'),
-              Text('Usuário: ${widget.ambient.username}'),
-              Text('Status: $status'),
-            ],
-          ),
-          actions: [
-            Center(
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.delete_outline_rounded,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-                label: Text(
-                  'Excluir',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-              ),
-            )
-          ],
-        );
-      },
+      builder: (context) => AmbientInfoDialog(
+        ambient: widget.ambient,
+        connectionStatus: connectionStatus,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    var statusColor = colorScheme.outline;
-    var icon = Icons.circle_outlined;
+    late Widget statusIndicator;
 
     if (_connectionStatus == _ConnectionStatus.online) {
-      statusColor = colorScheme.tertiary;
-      icon = Icons.circle_rounded;
+      statusIndicator = Icon(
+        Icons.circle_rounded,
+        color: colorScheme.tertiary,
+        size: 15,
+      );
     } else if (_connectionStatus == _ConnectionStatus.offline) {
-      statusColor = colorScheme.error;
+      statusIndicator = Icon(
+        Icons.circle_outlined,
+        color: colorScheme.error,
+        size: 15,
+      );
+    } else {
+      statusIndicator = Padding(
+        padding: const EdgeInsets.only(right: 3),
+        child: SizedBox(
+          height: 12,
+          width: 12,
+          child: CircularProgressIndicator(
+            color: colorScheme.outline,
+            strokeWidth: 2,
+          ),
+        ),
+      );
     }
 
     return ListTile(
-      leading: Icon(
-        icon,
-        color: statusColor,
-        size: 20,
-      ),
-      title: Text(
-        widget.ambient.name,
-        style: _connectionStatus == _ConnectionStatus.online
-            ? null
-            : TextStyle(color: colorScheme.outline),
+      title: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 12, 8),
+            child: statusIndicator,
+          ),
+          Text(
+            widget.ambient.name,
+            style: _connectionStatus == _ConnectionStatus.online
+                ? null
+                : TextStyle(color: colorScheme.outline),
+          ),
+        ],
       ),
       trailing: IconButton(
         onPressed: () => _showInfoModal(context),

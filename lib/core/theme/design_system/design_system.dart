@@ -20,7 +20,7 @@ ThemeData get _systemTheme =>
         ? _darkTheme
         : _lightTheme;
 
-ThemeMode themeMode = ThemeMode.light;
+ThemeMode themeMode = ThemeMode.system;
 
 ThemeData get currentTheme {
   if (themeMode == ThemeMode.system) {

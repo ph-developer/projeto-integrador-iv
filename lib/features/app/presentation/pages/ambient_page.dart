@@ -5,7 +5,7 @@ import '../../../../core/helpers/snackbar_helper.dart';
 import '../../../../core/injection/injector.dart';
 import '../../../../core/router/router.dart';
 import '../../domain/errors/failures.dart';
-import '../stores/ambient_store.dart';
+import '../controllers/ambient_controller.dart';
 
 class AmbientPage extends StatefulWidget {
   final String ambientId;
@@ -18,20 +18,20 @@ class AmbientPage extends StatefulWidget {
 
 class _AmbientPageState extends State<AmbientPage> {
   final reactionDisposers = <ReactionDisposer>[];
-  final ambientStore = inject<AmbientStore>();
+  final controller = inject<AmbientController>();
 
   @override
   void initState() {
     super.initState();
     reactionDisposers.addAll([
-      reaction((_) => ambientStore.failure, _onFailure),
+      reaction((_) => controller.failure, _onFailure),
     ]);
-    ambientStore.fetchAmbient(widget.ambientId);
+    controller.fetchAmbient(widget.ambientId);
   }
 
   @override
   void dispose() {
-    ambientStore.closeAmbient();
+    controller.closeAmbient();
     for (final dispose in reactionDisposers) {
       dispose();
     }
@@ -42,9 +42,13 @@ class _AmbientPageState extends State<AmbientPage> {
     if (failure != null) {
       context.showErrorSnackbar(failure.message);
       if (failure is AmbientConnectionFailure) {
-        context.navigateBack();
+        _onNavigateBack();
       }
     }
+  }
+
+  void _onNavigateBack() {
+    context.navigateTo('/');
   }
 
   @override
@@ -55,18 +59,22 @@ class _AmbientPageState extends State<AmbientPage> {
       appBar: AppBar(
         title: Observer(
           builder: (_) {
-            final ambientName = ambientStore.ambient?.name ?? 'Carregando...';
+            final ambientName = controller.ambient?.name ?? 'Carregando...';
 
             return Text(ambientName);
           },
         ),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: _onNavigateBack,
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
       ),
       body: Observer(
         builder: (_) {
-          final isFetching = ambientStore.isFetching;
-          final ambient = ambientStore.ambient;
-          final sensors = ambientStore.sensors;
+          final isFetching = controller.isFetching;
+          final ambient = controller.ambient;
+          final sensors = controller.sensors;
 
           if (isFetching || ambient == null || sensors == null) {
             return const Center(
@@ -117,7 +125,7 @@ class _AmbientPageState extends State<AmbientPage> {
                     builder: (context, snapshot) {
                       final isOn = snapshot.data ?? false;
                       final isLoading =
-                          ambientStore.isChangingAirConditionerStatus;
+                          controller.isChangingAirConditionerStatus;
 
                       return Stack(
                         alignment: Alignment.center,
@@ -125,7 +133,7 @@ class _AmbientPageState extends State<AmbientPage> {
                           OutlinedButton(
                             onPressed: isLoading
                                 ? null
-                                : () => ambientStore.setAirConditionerStatus(
+                                : () => controller.setAirConditionerStatus(
                                       on: !isOn,
                                     ),
                             style: ElevatedButton.styleFrom(
@@ -192,7 +200,8 @@ class _AmbientPageState extends State<AmbientPage> {
                 //   children: [
                 //     Observer(
                 //       builder: (_) {
-                //         if (!ambientStore.isRecomendatedTurnAirConditionerOn) {
+                //         if (!ambientStore.isRecomendatedTurnAirConditionerOn)
+                // {
                 //           return const SizedBox.shrink();
                 //         }
 
@@ -201,8 +210,10 @@ class _AmbientPageState extends State<AmbientPage> {
                 //           child: Padding(
                 //             padding: const EdgeInsets.all(16),
                 //             child: Text(
-                //               'Considerando a temperatura e umidade atual do '
-                //               'ambiente, recomendamos que o ar condicionado seja '
+                //               'Considerando a temperatura e umidade atual '
+                //'do '
+                //               'ambiente, recomendamos que o ar condicionado'
+                //' seja '
                 //               'ligado.',
                 //               textAlign: TextAlign.justify,
                 //               style: TextStyle(

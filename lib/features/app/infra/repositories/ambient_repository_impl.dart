@@ -59,6 +59,60 @@ class AmbientRepositoryImpl extends IAmbientRepository {
   }
 
   @override
+  AsyncResult<Ambient, AppFailure> saveAmbient(
+    String id,
+    String name,
+    String host,
+    int port,
+    String username,
+    String password,
+    String temperatureTopic,
+    String humidityTopic,
+    String airConditionerStatusTopic,
+    String setAirConditionerStatusTopic,
+  ) async {
+    try {
+      final data = {
+        'name': name,
+        'host': host,
+        'port': port,
+        'username': username,
+        'password': password,
+        'topics': {
+          'temperature': temperatureTopic,
+          'humidity': humidityTopic,
+          'airConditionerStatus': airConditionerStatusTopic,
+          'setAirConditionerStatus': setAirConditionerStatusTopic,
+        }
+      };
+      final ambient = await _ambientDatasource.saveAmbient(id, data);
+      await _accessDatasource.addAccess(ambient.id);
+
+      return Success(ambient);
+    } on AppFailure catch (failure) {
+      return Failure(failure);
+    } catch (exception, stackTrace) {
+      await _errorHandler.reportException(exception, stackTrace);
+      return const Failure(UnknownError());
+    }
+  }
+
+  @override
+  AsyncResult<Unit, AppFailure> deleteAmbient(String ambientId) async {
+    try {
+      await _ambientDatasource.deleteAmbient(ambientId);
+      await _accessDatasource.removeAccess(ambientId);
+
+      return const Success(unit);
+    } on AppFailure catch (failure) {
+      return Failure(failure);
+    } catch (exception, stackTrace) {
+      await _errorHandler.reportException(exception, stackTrace);
+      return const Failure(UnknownError());
+    }
+  }
+
+  @override
   AsyncResult<Unit, AppFailure> closeAmbient(Ambient ambient) async {
     try {
       await _iotDatasource.disconnectAmbient(ambient);

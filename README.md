@@ -26,7 +26,7 @@
 
 No projeto há um stack docker contendo dois containers:
 - <b>mosquitto</b>: utilizado como broker mqtt para testes. Possui apenas um usuário cadastrado, sob nome 'mosquitto', e senha 'test'. Este container escuta duas portas, 1883 (MQTT) e 9001 (WS).
-- <b>node-red</b>: utilizado para 'mockar' os dados de sensores (temperatura, umidade e status do ar condicionado) para testes. Este container publica nos tópicos 'sala_teste/temperature', 'sala_teste/humidity' e 'sala_teste/airConditionerStatus'; e subscreve o tópico 'sala_teste/setAirConditionerStatus'.
+- <b>node-red</b>: utilizado para 'mockar' os dados de sensores (temperatura, umidade e status do ar condicionado) para testes. Este container publica nos tópicos 'salaTeste/temperature', 'salaTeste/humidity' e 'salaTeste/airConditionerStatus'; e subscreve o tópico 'salaTeste/setAirConditionerStatus'.
 
 Para inicializar o stack, basta executar o seguinte comando:
 ```shell

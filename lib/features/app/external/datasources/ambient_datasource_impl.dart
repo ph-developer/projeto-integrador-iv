@@ -32,6 +32,30 @@ class AmbientDatasourceImpl extends IAmbientDatasource {
   }
 
   @override
+  Future<Ambient> saveAmbient(String id, Map<String, dynamic> data) async {
+    final colRef = _firebaseFirestore.collection('ambients');
+    final docRef = colRef.doc(id);
+
+    await docRef.set(data);
+
+    final ambientMap = {
+      ...data,
+      'id': id,
+    };
+    final ambient = AmbientDTO.fromMap(ambientMap);
+
+    return ambient;
+  }
+
+  @override
+  Future<void> deleteAmbient(String ambientId) async {
+    final colRef = _firebaseFirestore.collection('ambients');
+    final docRef = colRef.doc(ambientId);
+
+    await docRef.delete();
+  }
+
+  @override
   Future<List<Ambient>> getAmbients(List<String> ids) async {
     final colRef = _firebaseFirestore.collection('ambients');
     final query = colRef.where(FieldPath.documentId, whereIn: ids);

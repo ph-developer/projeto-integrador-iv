@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/app/presentation/pages/ambient_page.dart';
 import '../../features/app/presentation/pages/ambients_page.dart';
+import '../../features/app/presentation/pages/edit_ambient_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../guards/auth_guard.dart';
 import '../guards/guest_guard.dart';
@@ -33,6 +34,18 @@ Future<void> setupRouter([String initialRoute = '/']) async {
         redirect: authGuard,
         builder: (context, state) => AmbientPage(state.params['ambientId']!),
       ),
+      GoRoute(
+        name: 'new-ambient',
+        path: '/edit-ambient',
+        redirect: authGuard,
+        builder: (context, state) => const EditAmbientPage(null),
+      ),
+      GoRoute(
+        name: 'edit-ambient',
+        path: '/edit-ambient/:ambientId',
+        redirect: authGuard,
+        builder: (context, state) => EditAmbientPage(state.params['ambientId']),
+      ),
     ],
   );
 }
@@ -43,12 +56,6 @@ extension RouterExtension on BuildContext {
       router.go(location);
     } else {
       router.push(location);
-    }
-  }
-
-  Future<void> navigateBack() async {
-    if (router.canPop()) {
-      router.pop();
     }
   }
 }
